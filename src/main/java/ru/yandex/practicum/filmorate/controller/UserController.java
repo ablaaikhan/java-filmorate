@@ -46,9 +46,17 @@ public class UserController {
     }
 
     private void check(User user) {
+        if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+            log.info("Логин не может быть пустым и содержать пробелы");
+            throw new ValidationException("Логин не может быть пустым и содержать пробелы");
+        }
         if (user.getBirthday().isAfter(LocalDate.now())) {
             log.info("Дата рождения не может быть в будущем");
             throw new ValidationException("Дата рождения не может быть в будущем");
+        }
+        if (user.getName() == null || user.getName().isBlank()) {
+            log.info("Пользователь не заполнил Имя");
+            user.setName(user.getLogin());
         }
     }
 }

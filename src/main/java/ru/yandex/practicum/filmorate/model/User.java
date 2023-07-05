@@ -15,7 +15,7 @@ public class User {
     @NotBlank(message = "Email не может быть пустым")
     @Email(message = "Email должен быть корректным")
     private String email;
-    @NotNull
+    @NotBlank
     @Pattern(regexp = "\\S+")
     private String login;
     private String name;
