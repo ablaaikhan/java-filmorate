@@ -13,16 +13,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+@RequestMapping("/users")
 @Slf4j
 @RestController
 public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
     private int generatorId = 1;
 
-
-    @NotNull
-    @NotBlank
-    @PostMapping("/users")
+    @PostMapping
     public User add(@RequestBody @Valid User user) throws ValidationException {
         check(user);
         user.setId(generatorId++);
@@ -31,8 +29,8 @@ public class UserController {
         return user;
     }
 
-    @PutMapping("/users")
-    public User put(@RequestBody @Valid User user) throws Exception {
+    @PutMapping
+    public User put(@RequestBody @Valid User user) {
         if (!users.containsKey(user.getId())) {
             log.info("Пользователь " + user.getId() + " не найден");
             throw new Exception("Пользователь не найден");
@@ -42,7 +40,7 @@ public class UserController {
         return user;
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public Collection<User> get() {
         log.info("Текущее количество пользователей: {}", users.size());
         return users.values();

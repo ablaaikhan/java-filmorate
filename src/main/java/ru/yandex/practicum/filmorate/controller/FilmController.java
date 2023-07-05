@@ -11,15 +11,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+@RequestMapping("/films")
 @Slf4j
 @RestController
 public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
     private int generatorId = 1;
-    private final LocalDate date = LocalDate.of(1895, 12, 28);
+    private static final LocalDate RELEASE_DATE = LocalDate.of(1895, 12, 28);
 
 
-    @PostMapping("/films")
+    @PostMapping
     public Film add(@RequestBody @Valid Film film) throws ValidationException {
         check(film);
         film.setId(generatorId++);
@@ -28,8 +29,8 @@ public class FilmController {
         return film;
     }
 
-    @PutMapping("/films")
-    public Film put(@RequestBody @Valid Film film) throws Exception {
+    @PutMapping
+    public Film put(@RequestBody @Valid Film film) {
         if (!films.containsKey(film.getId())) {
             log.info("Фильм " + film.getId() + " не найден");
             throw new Exception("Фильм " + film.getId() + " не найден");
@@ -39,7 +40,7 @@ public class FilmController {
         return film;
     }
 
-    @GetMapping("/films")
+    @GetMapping
     public Collection<Film> get() {
         log.info("Текущее количество фильмов: {}", films.size());
         return films.values();
