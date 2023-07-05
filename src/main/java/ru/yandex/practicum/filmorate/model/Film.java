@@ -12,9 +12,9 @@ import java.time.LocalDate;
 @Data
 public class Film {
     private Integer id;
-    @NotNull
     @NotBlank
     private String name;
+    @NotNull
     @Size(max = 200, message = "Длина описания не должна превышать 200 символов")
     private String description;
     @JsonFormat(pattern = "yyyy-MM-dd")

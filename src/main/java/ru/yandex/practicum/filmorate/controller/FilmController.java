@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.ParameterNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -25,18 +26,18 @@ public class FilmController {
         check(film);
         film.setId(generatorId++);
         films.put(film.getId(), film);
-        log.info("Добавлен фильм под названием " + film.getName());
+        log.info("Добавлен фильм под названием {} ", film.getName());
         return film;
     }
 
     @PutMapping
     public Film put(@RequestBody @Valid Film film) {
         if (!films.containsKey(film.getId())) {
-            log.info("Фильм " + film.getId() + " не найден");
-            throw new Exception("Фильм " + film.getId() + " не найден");
+            log.info("Фильм {} не найден", film.getId());
+            throw new ParameterNotFoundException("Фильм " + film.getName() + " не найден");
         }
         films.put(film.getId(), film);
-        log.info("Фильм " + film.getName() + " под номерам ID - " + film.getId() + " обновлен");
+        log.info("Фильм {} под номерам ID - {} обновлен", film.getName(), film.getId());
         return film;
     }
 
@@ -47,9 +48,9 @@ public class FilmController {
     }
 
     private void check(Film film) {
-        if (film.getReleaseDate().isBefore(date)) {
-            log.info("Дата публикации фильма раньше положенного, фильм должен быть опубликован не раньше чем - " + date);
-            throw new ValidationException("Дата публикации фильма раньше положенного, фильм должен быть опубликован не раньше чем - " + date);
+        if (film.getReleaseDate().isBefore(RELEASE_DATE)) {
+            log.info("Дата публикации фильма раньше положенного, фильм должен быть опубликован не раньше чем - " + RELEASE_DATE);
+            throw new ValidationException("Дата публикации фильма раньше положенного, фильм должен быть опубликован не раньше чем - " + RELEASE_DATE);
         }
     }
 }

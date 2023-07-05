@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.ParameterNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -25,18 +26,18 @@ public class UserController {
         check(user);
         user.setId(generatorId++);
         users.put(user.getId(), user);
-        log.info("Добавлен пользователь под именем " + user.getName());
+        log.info("Добавлен пользователь под именем {} ", user.getName());
         return user;
     }
 
     @PutMapping
     public User put(@RequestBody @Valid User user) {
         if (!users.containsKey(user.getId())) {
-            log.info("Пользователь " + user.getId() + " не найден");
-            throw new Exception("Пользователь не найден");
+            log.info("Пользователь {} не найден", user.getId());
+            throw new ParameterNotFoundException("Пользователь не найден");
         }
         users.put(user.getId(), user);
-        log.info("Пользователь " + user.getName() + " под номерам ID - " + user.getId() + " обновлен");
+        log.info("Пользователь {} под номерам ID - {} обновлен", user.getName(), user.getId());
         return user;
     }
 
@@ -47,17 +48,9 @@ public class UserController {
     }
 
     private void check(User user) {
-        if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            log.info("Логин не может быть пустым и содержать пробелы");
-            throw new ValidationException("Логин не может быть пустым и содержать пробелы");
-        }
         if (user.getBirthday().isAfter(LocalDate.now())) {
             log.info("Дата рождения не может быть в будущем");
             throw new ValidationException("Дата рождения не может быть в будущем");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            log.info("Пользователь не заполнил Имя");
-            user.setName(user.getLogin());
         }
     }
 }
