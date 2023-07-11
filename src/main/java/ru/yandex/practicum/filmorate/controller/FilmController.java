@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.service.film.FilmService;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +38,7 @@ public class FilmController {
     }
 
     @GetMapping(path = "films/{id}")
-    public Optional<Film> getFilmById(@PathVariable(value = "id") Long id) {
+    public Film getFilmById(@PathVariable(value = "id") Long id) {
         return filmService.getFilmById(id);
     }
 
