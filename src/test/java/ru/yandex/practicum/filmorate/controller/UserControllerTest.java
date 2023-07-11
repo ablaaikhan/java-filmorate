@@ -47,6 +47,6 @@ class UserControllerTest {
             userController.add(user);
         });
 
-        assertEquals("Ошибка валидации", exception.getMessage());
+        assertEquals("Дата рождения не может быть в будущем", exception.getMessage());
     }
 }
