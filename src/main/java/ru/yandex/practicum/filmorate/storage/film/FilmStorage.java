@@ -9,9 +9,9 @@ import java.util.Optional;
 
 public interface FilmStorage {
 
-    Optional<Film> add(@RequestBody @Valid Film film);
+    Optional<Film> add(Film film);
 
-    Optional<Film> put(@RequestBody @Valid Film film);
+    Optional<Film> put(Film film);
 
     Collection<Film> get();
 

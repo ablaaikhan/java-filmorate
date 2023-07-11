@@ -18,7 +18,6 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
     private Long generatorId = 1L;
 
-
     @Override
     public Optional<User> add(@RequestBody User user) {
         try {

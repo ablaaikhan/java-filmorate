@@ -22,20 +22,12 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
 
-
     public Film add(Film film) {
-        if (filmStorage.add(film).isEmpty()) {
-            throw new ValidationException("Ошибка валидации");
-        }
         log.info("Добавлен фильм под названием " + film.getName());
         return film;
     }
 
     public Film put(Film film) {
-        if (filmStorage.put(film).isEmpty()) {
-            log.info("Фильм " + film.getId() + " не найден");
-            throw new ParameterNotFoundException("Фильм " + film.getId() + " не найден");
-        }
         log.info("Фильм " + film.getName() + " под номерам ID - " + film.getId() + " обновлен");
         return film;
     }
@@ -44,20 +36,14 @@ public class FilmService {
         return filmStorage.get();
     }
 
-    public Optional<Film> getFilmById(Long id) {
-        if (filmStorage.getFilmById(id).isEmpty()) {
-            log.info("Фильм " + id + " не найден");
-            throw new ParameterNotFoundException("Фильм " + id + " не найден");
-        }
+    public Film getFilmById(Long id) {
         log.info("Запрошен фильм под ID {}", id);
         return filmStorage.getFilmById(id);
     }
 
     public void addLike(Long filmId, Long userId) {
-        Film film = filmStorage.getFilmById(filmId)
-                .orElseThrow(() -> new ParameterNotFoundException(""));
-        User user = userStorage.getUserByID(userId)
-                .orElseThrow(() -> new ParameterNotFoundException(""));
+        Film film = filmStorage.getFilmById(filmId);
+        User user = userStorage.getUserByID(userId);
         Set<Long> userLikes = film.getLikes();
         if (userLikes.contains(userId)) {
             log.info("Лайк уже был поставлен пользователем {}", user.getName());

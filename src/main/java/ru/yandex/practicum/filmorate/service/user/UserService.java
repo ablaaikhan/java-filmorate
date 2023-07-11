@@ -22,7 +22,6 @@ public class UserService {
 
     private final UserStorage userStorage;
 
-
     public User add(User user) {
         if (userStorage.add(user).isEmpty()) {
             throw new ValidationException("Ошибка валидации");

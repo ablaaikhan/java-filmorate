@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.film;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
+import ru.yandex.practicum.filmorate.exception.ParameterNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -36,7 +37,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Optional<Film> put(@RequestBody Film film) {
         if (!films.containsKey(film.getId())) {
-            return Optional.empty();
+            throw new ParameterNotFoundException("Фильм " + film.getId() + " не найден");
         }
         films.put(film.getId(), film);
         return Optional.of(film);
@@ -51,7 +52,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Optional<Film> getFilmById(Long id) {
         if (!films.containsKey(id)) {
-            return Optional.empty();
+            throw new ParameterNotFoundException("Фильм " + id + " не найден");
         }
         return Optional.of(films.get(id));
     }
