@@ -31,10 +31,6 @@ public class UserService {
     }
 
     public User put(User user) {
-        if (userStorage.put(user).isEmpty()) {
-            log.info("Пользователь " + user.getId() + " не найден");
-            throw new ParameterNotFoundException("Пользователь не найден");
-        }
         log.info("Пользователь " + user.getName() + " под номерам ID - " + user.getId() + " обновлен");
         return user;
     }
@@ -43,18 +39,14 @@ public class UserService {
         return userStorage.get();
     }
 
-    public Optional<User> getUserByID(Long id) {
-        if (userStorage.getUserByID(id).isEmpty()) {
-            log.info("Пользователь под ID-" + id + " , не найден");
-            throw new ParameterNotFoundException("Пользователь под ID-" + id + " , не найден");
-        }
+    public User getUserByID(Long id) {
         log.info("Запрошен пользователем под ID {}", id);
         return userStorage.getUserByID(id);
     }
 
     public void addFriends(Long id, Long friendId) {
-        User user = userStorage.getUserByID(id).orElseThrow(() -> new ParameterNotFoundException(""));
-        User otherUser = userStorage.getUserByID(friendId).orElseThrow(() -> new ParameterNotFoundException(""));
+        User user = userStorage.getUserByID(id);
+        User otherUser = userStorage.getUserByID(friendId);
         if (user.getId().equals(friendId)) {
             throw new IncorrectParameterException("Пользователь не может добавить самого себя");
         }
@@ -64,8 +56,8 @@ public class UserService {
     }
 
     public void deleteFriends(Long id, Long friendId) {
-        User user = userStorage.getUserByID(id).orElseThrow(() -> new ParameterNotFoundException(""));
-        User otherUser = userStorage.getUserByID(friendId).orElseThrow(() -> new ParameterNotFoundException(""));
+        User user = userStorage.getUserByID(id);
+        User otherUser = userStorage.getUserByID(friendId);
         if (!user.getFriends().contains(friendId) && user.getId().equals(id)) {
             throw new IncorrectParameterException("Пользователя " + otherUser.getName() + " нет в друзьях");
         }
@@ -75,20 +67,20 @@ public class UserService {
     }
 
     public List<User> getFriends(Long id) {
-        User user = userStorage.getUserByID(id).orElseThrow(() -> new ParameterNotFoundException(""));
+        User user = userStorage.getUserByID(id);
         log.info("Возвращен список друзей пользователя {} ", user.getName());
         return user.getFriends().stream()
-                .map(userId -> userStorage.getUserByID(userId).orElseThrow())
+                .map(userStorage::getUserByID)
                 .collect(Collectors.toList());
     }
 
     public List<User> getCommonFriends(Long id, Long otherID) {
-        User user = userStorage.getUserByID(id).orElseThrow(() -> new ParameterNotFoundException(""));
-        User otherUser = userStorage.getUserByID(otherID).orElseThrow(() -> new ParameterNotFoundException(""));
+        User user = userStorage.getUserByID(id);
+        User otherUser = userStorage.getUserByID(otherID);
         Set<Long> userFriends = user.getFriends();
         return otherUser.getFriends().stream()
                 .filter(userFriends::contains)
-                .map(userId -> userStorage.getUserByID(userId).orElseThrow())
+                .map(userStorage::getUserByID)
                 .collect(Collectors.toList());
     }
 }

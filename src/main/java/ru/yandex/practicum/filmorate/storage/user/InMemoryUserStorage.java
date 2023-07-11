@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.user;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
+import ru.yandex.practicum.filmorate.exception.ParameterNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -20,11 +21,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public Optional<User> add(@RequestBody User user) {
-        try {
-            validate(user);
-        } catch (ValidationException e) {
-            return Optional.empty();
-        }
+        validate(user);
         user.setId(generatorId++);
         users.put(user.getId(), user);
         return Optional.of(user);
@@ -33,7 +30,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public Optional<User> put(@RequestBody User user) {
         if (!users.containsKey(user.getId())) {
-            return Optional.empty();
+            throw new ParameterNotFoundException("Пользователь не найден");
         }
         users.put(user.getId(), user);
         return Optional.of(user);
@@ -46,11 +43,11 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Optional<User> getUserByID(Long id) {
+    public User getUserByID(Long id) {
         if (!users.containsKey(id)) {
-            return Optional.empty();
+            throw new ParameterNotFoundException("Пользователь под ID-" + id + " , не найден");
         }
-        return Optional.of(users.get(id));
+        return users.get(id);
     }
 
     private void validate(User user) {

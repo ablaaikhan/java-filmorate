@@ -24,11 +24,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Optional<Film> add(@RequestBody Film film) {
-        try {
-            validate(film);
-        } catch (ValidationException e) {
-            return Optional.empty();
-        }
+        validate(film);
         film.setId(generatorId++);
         films.put(film.getId(), film);
         return Optional.of(film);
@@ -50,11 +46,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Optional<Film> getFilmById(Long id) {
+    public Film getFilmById(Long id) {
         if (!films.containsKey(id)) {
             throw new ParameterNotFoundException("Фильм " + id + " не найден");
         }
-        return Optional.of(films.get(id));
+        return films.get(id);
     }
 
     private void validate(Film film) {
