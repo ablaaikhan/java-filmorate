@@ -22,7 +22,7 @@ class FilmControllerTest {
     @DisplayName("Создание фильма (проверка даты публикации фильма)")
     void addFilms_errorChecking() throws ValidationException {
         Film film = new Film();
-        film.setName("");
+        film.setName("Тест");
         film.setDescription("Тест");
         film.setReleaseDate(LocalDate.of(1800, 1, 1));
         film.setDuration(10);
@@ -30,6 +30,6 @@ class FilmControllerTest {
         ValidationException exception = assertThrows(ValidationException.class, () -> {
             filmController.add(film);
         });
-        assertEquals("Ошибка валидации", exception.getMessage());
+        assertEquals("Дата публикации фильма раньше положенного, фильм должен быть опубликован не раньше чем - 1895-12-28", exception.getMessage());
     }
 }

@@ -31,7 +31,7 @@ class UserControllerTest {
             userController.add(user);
         });
 
-        assertEquals("Ошибка валидации", exception.getMessage());
+        assertEquals("Логин не может быть пустым и содержать пробелы", exception.getMessage());
     }
 
     @Test

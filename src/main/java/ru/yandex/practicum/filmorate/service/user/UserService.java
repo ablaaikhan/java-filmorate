@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.IncorrectParameterException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -21,16 +20,13 @@ public class UserService {
     private final UserStorage userStorage;
 
     public User add(User user) {
-        if (userStorage.add(user).isEmpty()) {
-            throw new ValidationException("Ошибка валидации");
-        }
         log.info("Добавлен пользователь под именем " + user.getName());
-        return user;
+        return userStorage.add(user);
     }
 
     public User put(User user) {
         log.info("Пользователь " + user.getName() + " под номерам ID - " + user.getId() + " обновлен");
-        return user;
+        return userStorage.put(user);
     }
 
     public Collection<User> get() {

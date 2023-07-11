@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 @Slf4j
@@ -20,20 +19,20 @@ public class InMemoryUserStorage implements UserStorage {
     private Long generatorId = 1L;
 
     @Override
-    public Optional<User> add(@RequestBody User user) {
+    public User add(@RequestBody User user) {
         validate(user);
         user.setId(generatorId++);
         users.put(user.getId(), user);
-        return Optional.of(user);
+        return user;
     }
 
     @Override
-    public Optional<User> put(@RequestBody User user) {
+    public User put(@RequestBody User user) {
         if (!users.containsKey(user.getId())) {
             throw new ParameterNotFoundException("Пользователь не найден");
         }
         users.put(user.getId(), user);
-        return Optional.of(user);
+        return user;
     }
 
     @Override

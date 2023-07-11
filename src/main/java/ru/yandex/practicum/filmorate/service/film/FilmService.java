@@ -25,12 +25,12 @@ public class FilmService {
 
     public Film add(Film film) {
         log.info("Добавлен фильм под названием " + film.getName());
-        return film;
+        return filmStorage.add(film);
     }
 
     public Film put(Film film) {
         log.info("Фильм " + film.getName() + " под номерам ID - " + film.getId() + " обновлен");
-        return film;
+        return filmStorage.put(film);
     }
 
     public Collection<Film> get() {

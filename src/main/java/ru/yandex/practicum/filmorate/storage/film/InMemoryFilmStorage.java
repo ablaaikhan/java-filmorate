@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 @Slf4j
@@ -23,20 +22,20 @@ public class InMemoryFilmStorage implements FilmStorage {
 
 
     @Override
-    public Optional<Film> add(@RequestBody Film film) {
+    public Film add(@RequestBody Film film) {
         validate(film);
         film.setId(generatorId++);
         films.put(film.getId(), film);
-        return Optional.of(film);
+        return film;
     }
 
     @Override
-    public Optional<Film> put(@RequestBody Film film) {
+    public Film put(@RequestBody Film film) {
         if (!films.containsKey(film.getId())) {
             throw new ParameterNotFoundException("Фильм " + film.getId() + " не найден");
         }
         films.put(film.getId(), film);
-        return Optional.of(film);
+        return film;
     }
 
     @Override
