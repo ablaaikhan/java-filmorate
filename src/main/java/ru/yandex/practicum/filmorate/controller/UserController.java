@@ -1,62 +1,37 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ParameterNotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
-@RequestMapping("/users")
-@Slf4j
 @RestController
+@RequiredArgsConstructor
 public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
-    private int generatorId = 1;
+    private final UserService userService;
 
-    @PostMapping
-    public User add(@RequestBody @Valid User user) throws ValidationException {
-        check(user);
-        user.setId(generatorId++);
-        users.put(user.getId(), user);
-        log.info("Добавлен пользователь под именем {} ", user.getName());
-        return user;
+    @PostMapping(path = "/users")
+    public Optional<User> add(@RequestBody @Valid User user) {
+        return userService.add(user);
     }
 
-    @PutMapping
-    public User put(@RequestBody @Valid User user) {
-        if (!users.containsKey(user.getId())) {
-            log.info("Пользователь {} не найден", user.getId());
-            throw new ParameterNotFoundException("Пользователь не найден");
-        }
-        users.put(user.getId(), user);
-        log.info("Пользователь {} под номерам ID - {} обновлен", user.getName(), user.getId());
-        return user;
+    @PutMapping(path = "/users")
+    public Optional<User> put(@RequestBody @Valid User user) {
+        return userService.put(user);
     }
 
-    @GetMapping
+    @GetMapping(path = "/users")
     public Collection<User> get() {
-        log.info("Текущее количество пользователей: {}", users.size());
-        return users.values();
+        return userService.get();
     }
 
-    private void check(User user) {
-        if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-            log.info("Логин не может быть пустым и содержать пробелы");
-            throw new ValidationException("Логин не может быть пустым и содержать пробелы");
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.info("Дата рождения не может быть в будущем");
-            throw new ValidationException("Дата рождения не может быть в будущем");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            log.info("Пользователь не заполнил Имя");
-            user.setName(user.getLogin());
-        }
+    @GetMapping(path = "/users/{id}")
+    public User getUserById(@PathVariable(value = "id") Long id) {
+        return userService.getUserByID(id);
     }
+
 }
