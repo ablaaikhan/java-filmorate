@@ -29,7 +29,7 @@ public class FilmService {
     }
 
     public Film put(Film film) {
-        log.info("Фильм " + film.getName() + " под номерам ID - " + film.getId() + " обновлен");
+        log.info("Добавлен фильм " + film.getName() + " под номерам ID - " + film.getId() + " обновлен");
         return filmStorage.put(film);
     }
 
